@@ -22,7 +22,7 @@ class GenerateInclude extends Command
 
     /**
      * Execute the console command.
-     * @return mixed
+     * @return int
      * @throws \Exception
      */
     public function handle()
@@ -56,7 +56,7 @@ class GenerateInclude extends Command
                 $this->info("Written to : " . $files);
             }
 
-            return;
+            return 0;
         }
 
         if ($langFiles) {
@@ -73,6 +73,8 @@ class GenerateInclude extends Command
         if ($config['showOutputMessages']) {
             $this->info("Written to : " . $jsFile);
         }
+
+        return 0;
     }
 
     /**

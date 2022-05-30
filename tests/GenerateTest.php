@@ -1,8 +1,9 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use MartinLindhe\VueInternationalizationGenerator\Generator;
 
-class GenerateTest extends \PHPUnit_Framework_TestCase
+class GenerateTest extends TestCase
 {
     private function generateLocaleFilesFrom(array $arr)
     {
@@ -49,7 +50,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    function testBasic()
+    public function testBasic(): void
     {
         $arr = [
             'en' => [
@@ -67,26 +68,29 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "yes",' . PHP_EOL
-            . '            "no": "no"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    },' . PHP_EOL
-            . '    "sv": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "ja",' . PHP_EOL
-            . '            "no": "nej"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "yes": "yes",
+                    "no": "no"
+                }
+            },
+            "sv": {
+                "help": {
+                    "yes": "ja",
+                    "no": "nej"
+                }
+            }
+        }
+
+        JS;
+
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicES6Format()
+    public function testBasicES6Format(): void
     {
         $format = 'es6';
 
@@ -106,26 +110,28 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "yes",' . PHP_EOL
-            . '            "no": "no"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    },' . PHP_EOL
-            . '    "sv": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "ja",' . PHP_EOL
-            . '            "no": "nej"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root, $format));
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "yes": "yes",
+                    "no": "no"
+                }
+            },
+            "sv": {
+                "help": {
+                    "yes": "ja",
+                    "no": "nej"
+                }
+            }
+        }
+
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root, $format));
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithUMDFormat()
+    public function testBasicWithUMDFormat(): void
     {
         $format = 'umd';
         $arr = [
@@ -144,33 +150,34 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        $this->assertEquals(
-            '(function (global, factory) {' . PHP_EOL
-            . '    typeof exports === \'object\' && typeof module !== \'undefined\' ? module.exports = factory() :' . PHP_EOL
-            . '        typeof define === \'function\' && define.amd ? define(factory) :' . PHP_EOL
-            . '            typeof global.vuei18nLocales === \'undefined\' ? global.vuei18nLocales = factory() : Object.keys(factory()).forEach(function (key) {global.vuei18nLocales[key] = factory()[key]});' . PHP_EOL
-            . '}(this, (function () { \'use strict\';' . PHP_EOL
-            . '    return {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "yes",' . PHP_EOL
-            . '            "no": "no"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    },' . PHP_EOL
-            . '    "sv": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "ja",' . PHP_EOL
-            . '            "no": "nej"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL
-            . PHP_EOL
-            . '})));',
-            (new Generator([]))->generateFromPath($root, $format));
+        $expected = <<<'JS'
+        (function (global, factory) {
+            typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+                typeof define === 'function' && define.amd ? define(factory) :
+                    typeof global.vuei18nLocales === 'undefined' ? global.vuei18nLocales = factory() : Object.keys(factory()).forEach(function (key) {global.vuei18nLocales[key] = factory()[key]});
+        }(this, (function () { 'use strict';
+            return {
+            "en": {
+                "help": {
+                    "yes": "yes",
+                    "no": "no"
+                }
+            },
+            "sv": {
+                "help": {
+                    "yes": "ja",
+                    "no": "nej"
+                }
+            }
+        }
+        
+        })));
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root, $format));
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithJSONFormat()
+    public function testBasicWithJSONFormat(): void
     {
         $format = 'json';
         $arr = [
@@ -189,26 +196,28 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        $this->assertEquals(
-            '{' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "yes",' . PHP_EOL
-            . '            "no": "no"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    },' . PHP_EOL
-            . '    "sv": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "ja",' . PHP_EOL
-            . '            "no": "nej"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root, $format));
+        $expected = <<<'JSON'
+        {
+            "en": {
+                "help": {
+                    "yes": "yes",
+                    "no": "no"
+                }
+            },
+            "sv": {
+                "help": {
+                    "yes": "ja",
+                    "no": "nej"
+                }
+            }
+        }
+
+        JSON;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root, $format));
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testInvalidFormat()
+    public function testInvalidFormat(): void
     {
         $format = 'es5';
         $arr = [];
@@ -221,9 +230,10 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
 
         }
         $this->destroyLocaleFilesFrom($arr, $root);
+        $this->assertTrue(true);
     }
 
-    function testBasicWithTranslationString()
+    public function testBasicWithTranslationString(): void
     {
         $arr = [
             'en' => [
@@ -234,19 +244,21 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "main": {' . PHP_EOL
-            . '            "hello {name}": "Hello {name}"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "main": {
+                    "hello {name}": "Hello {name}"
+                }
+            }
+        }
+
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithEscapedTranslationString()
+    public function testBasicWithEscapedTranslationString(): void
     {
         $arr = [
             'en' => [
@@ -258,20 +270,22 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "main": {' . PHP_EOL
-            . '            "hello {name}": "Hello {name}",' . PHP_EOL
-            . '            "time test 10:00": "Time test 10:00"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "main": {
+                    "hello {name}": "Hello {name}",
+                    "time test 10:00": "Time test 10:00"
+                }
+            }
+        }
+
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithVendor()
+    public function testBasicWithVendor(): void
     {
         $arr = [
             'en' => [
@@ -303,42 +317,43 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "yes": "yes",
+                    "no": "no"
+                },
+                "vendor": {
+                    "test-vendor": {
+                        "test-lang": {
+                            "maybe": "maybe"
+                        }
+                    }
+                }
+            },
+            "sv": {
+                "help": {
+                    "yes": "ja",
+                    "no": "nej"
+                },
+                "vendor": {
+                    "test-vendor": {
+                        "test-lang": {
+                            "maybe": "kanske"
+                        }
+                    }
+                }
+            }
+        }
 
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "yes",' . PHP_EOL
-            . '            "no": "no"' . PHP_EOL
-            . '        },' . PHP_EOL
-            . '        "vendor": {' . PHP_EOL
-            . '            "test-vendor": {' . PHP_EOL
-            . '                "test-lang": {' . PHP_EOL
-            . '                    "maybe": "maybe"' . PHP_EOL
-            . '                }' . PHP_EOL
-            . '            }' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    },' . PHP_EOL
-            . '    "sv": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "ja",' . PHP_EOL
-            . '            "no": "nej"' . PHP_EOL
-            . '        },' . PHP_EOL
-            . '        "vendor": {' . PHP_EOL
-            . '            "test-vendor": {' . PHP_EOL
-            . '                "test-lang": {' . PHP_EOL
-            . '                    "maybe": "kanske"' . PHP_EOL
-            . '                }' . PHP_EOL
-            . '            }' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root, 'es6', true));
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root, 'es6', true));
 
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithVuexLib()
+    public function testBasicWithVuexLib(): void
     {
         $arr = [
             'en' => [
@@ -356,28 +371,29 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "yes": "yes",
+                    "no": "no"
+                }
+            },
+            "sv": {
+                "help": {
+                    "yes": "ja",
+                    "no": "nej"
+                }
+            }
+        }
 
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "yes",' . PHP_EOL
-            . '            "no": "no"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    },' . PHP_EOL
-            . '    "sv": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "ja",' . PHP_EOL
-            . '            "no": "nej"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
 
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testNamed()
+    public function testNamed(): void
     {
         $arr = [
             'en' => [
@@ -391,24 +407,25 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "yes": "see {link} y {lonk}",
+                    "no": {
+                        "one": "see {link}"
+                    }
+                }
+            }
+        }
 
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "see {link} y {lonk}",' . PHP_EOL
-            . '            "no": {' . PHP_EOL
-            . '                "one": "see {link}"' . PHP_EOL
-            . '            }' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
 
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testNamedWithEscaped()
+    public function testNamedWithEscaped(): void
     {
         $arr = [
             'en' => [
@@ -422,24 +439,25 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "yes": "see {link} y {lonk} at 08:00",
+                    "no": {
+                        "one": "see {link}"
+                    }
+                }
+            }
+        }
 
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "see {link} y {lonk} at 08:00",' . PHP_EOL
-            . '            "no": {' . PHP_EOL
-            . '                "one": "see {link}"' . PHP_EOL
-            . '            }' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
 
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testEscapedEscapeCharacter()
+    public function testEscapedEscapeCharacter(): void
     {
         $arr = [
             'en' => [
@@ -450,21 +468,22 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "test escaped": "escaped escape char not !:touched"
+                }
+            }
+        }
 
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "test escaped": "escaped escape char not !:touched"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
 
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testShouldNotTouchHtmlTags()
+    public function testShouldNotTouchHtmlTags(): void
     {
         $arr = [
             'en' => [
@@ -477,23 +496,24 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
+        $expected = <<<'JS'
+        export default {
+            "en": {
+                "help": {
+                    "yes": "see <a href=\"mailto:mail@com\">",
+                    "no": "see <a href=\"{link}\">",
+                    "maybe": "It is a <strong>Test</strong> ok!"
+                }
+            }
+        }
 
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "help": {' . PHP_EOL
-            . '            "yes": "see <a href=\"mailto:mail@com\">",' . PHP_EOL
-            . '            "no": "see <a href=\"{link}\">",' . PHP_EOL
-            . '            "maybe": "It is a <strong>Test</strong> ok!"' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator([]))->generateFromPath($root));
+        JS;
+        $this->assertEquals($expected, (new Generator([]))->generateFromPath($root));
 
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testPluralization()
+    public function testPluralization(): void
     {
         $arr = [
             'en' => [
@@ -509,38 +529,42 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-
+        
         // vue-i18n
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "plural": {' . PHP_EOL
-            . '            "one": "There is one apple|There are many apples",' . PHP_EOL
-            . '            "two": "There is one apple | There are many apples",' . PHP_EOL
-            . '            "five": {' . PHP_EOL
-            . '                "three": "There is one apple    | There are many apples",' . PHP_EOL
-            . '                "four": "There is one apple |     There are many apples"' . PHP_EOL
-            . '            }' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator(['i18nLib' => 'vue-i18n']))->generateFromPath($root));
+        $expected1 = <<<'JS'
+        export default {
+            "en": {
+                "plural": {
+                    "one": "There is one apple|There are many apples",
+                    "two": "There is one apple | There are many apples",
+                    "five": {
+                        "three": "There is one apple    | There are many apples",
+                        "four": "There is one apple |     There are many apples"
+                    }
+                }
+            }
+        }
+
+        JS;
+        $this->assertEquals($expected1, (new Generator(['i18nLib' => 'vue-i18n']))->generateFromPath($root));
 
         // vuex-i18n
-        $this->assertEquals(
-            'export default {' . PHP_EOL
-            . '    "en": {' . PHP_EOL
-            . '        "plural": {' . PHP_EOL
-            . '            "one": "There is one apple ::: There are many apples",' . PHP_EOL
-            . '            "two": "There is one apple ::: There are many apples",' . PHP_EOL
-            . '            "five": {' . PHP_EOL
-            . '                "three": "There is one apple ::: There are many apples",' . PHP_EOL
-            . '                "four": "There is one apple ::: There are many apples"' . PHP_EOL
-            . '            }' . PHP_EOL
-            . '        }' . PHP_EOL
-            . '    }' . PHP_EOL
-            . '}' . PHP_EOL,
-            (new Generator(['i18nLib' => 'vuex-i18n']))->generateFromPath($root));
+        $expected2 = <<<'JS'
+        export default {
+            "en": {
+                "plural": {
+                    "one": "There is one apple ::: There are many apples",
+                    "two": "There is one apple ::: There are many apples",
+                    "five": {
+                        "three": "There is one apple ::: There are many apples",
+                        "four": "There is one apple ::: There are many apples"
+                    }
+                }
+            }
+        }
+
+        JS;
+        $this->assertEquals($expected2, (new Generator(['i18nLib' => 'vuex-i18n']))->generateFromPath($root));
 
         $this->destroyLocaleFilesFrom($arr, $root);
     }

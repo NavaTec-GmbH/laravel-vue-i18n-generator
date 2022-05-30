@@ -1,2 +1,4 @@
 /vendor
 /.idea
+.vscode/launch.json
+.phpunit.result.cache
